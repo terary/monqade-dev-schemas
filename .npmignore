@@ -1,0 +1,9 @@
+
+
+# development dir
+dev/
+
+# dont need to include these
+node_modules/
+git-hub
+git-tmc

@@ -1,0 +1,24 @@
+{
+  "name": "monqade-dev-schemas",
+  "version": "1.0.0",
+  "description": "Monqade Schema Definitions - mostly for development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/monqade-dev-schemas.git"
+  },
+  "keywords": [
+    "monqade",
+    "schema",
+    "mqschema"
+  ],
+  "author": "Terary",
+  "license": "ISC",
+  "dependencies": {
+    "md5": "^2.2.1",
+    "mongoose": "^5.6.4"
+  }
+}
