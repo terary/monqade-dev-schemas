@@ -4,11 +4,11 @@
   "description": "Monqade Schema Definitions - mostly for development",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "no tests defined"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://gituser@vps.ubiquityservers.com:33233/home/gituser/repos/moncade/monqade-dev-schemas.git"
+    "url": "https://github.com/terary/monqade-dev-schemas"
   },
   "keywords": [
     "monqade",
@@ -16,7 +16,7 @@
     "mqschema"
   ],
   "author": "Terary",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "md5": "^2.2.1",
     "mongoose": "^5.6.4"

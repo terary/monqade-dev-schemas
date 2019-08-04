@@ -87,7 +87,7 @@ module.exports = {
       timestamps:true,
       writeConcern:{ w: 1, j: false},
       versionKey: '_docVersionKey', 
-      _schemaVersionKey:'0001'
+      _schemaVersion:'0001'
     }
   };
 

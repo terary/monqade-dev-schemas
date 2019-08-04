@@ -1,7 +1,14 @@
 "use strict"
 
-const ObjectId='ObjectId'; // calling code will need to replace
-                           // because 'common' file location unable to load mongoose within this file
+const collectionName = 'userinfo'
+const schemaVersion='0002';
+const schemaDescription = `
+  use case:  
+  Just a simple, no frills, practical schema definition. Good for building 
+  generic controls or template solutions.
+`;
+
+
 const randomElement = (ary)=>{
  return ary[Math.floor(Math.random() * ary.length)];
 }
@@ -35,8 +42,8 @@ module.exports = {
       type: "String",
       makeTestData: ()=>{return 'The ABC Co.' + Math.random();},
       notes: {
-        "purpose": "This field is used for: ...",
-        "restriction": "max length, min value, explaination of validate "
+        "purpose": "Just a path to give the schema more realistic appearance.",
+        "restriction": "length 2-100"
       },
       maxlength: 50,
       minlength: 3
@@ -51,8 +58,8 @@ module.exports = {
       type: "String",
       makeTestData: ()=>{return 'Lewiston ' + Math.random();},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": "Just a path to give the schema more realistic appearance.",
+        "restriction": "length 2-100"
       },
       maxlength: 100,
       minlength: 2
@@ -98,10 +105,15 @@ module.exports = {
       type: "Number",
       makeTestData: ()=>{return Math.floor(10 * Math.random())},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
-      },
-      "max": 9
+        "purpose": `Serves as a path that can be used as a collection segment.  
+                    All documents with idxBucket=n -> approx. 10% the documents 
+                    All documents with idxBucket < n -> approx. (n*10)% the documents 
+                    All documents with idxBucket < 3 -> approx. 30% the documents 
+                    All documents with idxBucket in(0,2,1,5,9) -> approx. 50% the documents
+
+        `,
+        "restriction": "none"
+      }
     },
     restrictedPath: {
       name: "restrictedPath",
@@ -163,85 +175,14 @@ module.exports = {
     }
   
   },
-  systemPaths:{
-    _id: {
-      name: "_id",
-      isSearchable: false,
-      isProjectable: false,
-      isUpdatable: false,
-      isInsertable: false,
-      isRequired: true,
-      type: "ObjectId",
-      notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
-      }
-    },
-    updatedAt: {
-      name: "updatedAt",
-      isSearchable: false,
-      isProjectable: false,
-      isUpdatable: false,
-      isInsertable: false,
-      isRequired: true,
-      type: "Date",
-      notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
-      }
-    },
-    createdAt: {
-      name: "createdAt",
-      isSearchable: false,
-      isProjectable: false,
-      isUpdatable: false,
-      isInsertable: false,
-      isRequired: true,
-      type: "Date",
-      notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
-      }
-    },
-    __v: {
-      name: "__v",
-      isSearchable: false,
-      isProjectable: false,
-      isUpdatable: false,
-      isInsertable: false,
-      isRequired: true,
-      type: "Number",
-      notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
-      }
-    },
-    schemaVersionKey: {
-      name: "schemaVersionKey",
-      isSearchable: false,
-      isProjectable: false,
-      isUpdatable: false,
-      isInsertable: false,
-      isRequired: true,
-      type: "String",
-      makeTestData:()=>{},
-      notes: {
-        "purpose": "Track schema used to insert document, eg: schema compliancy ",
-        "restriction": "match this schema schema's  schemaVersionKey "
-      }
-    }
-  },
   
-  options:
-    {
-      documentation:`some document stuff goes here`,
-      collection: 'userinfo',
-      timestamps:true,
-      writeConcern:{ w: 1, j: false},
-      versionKey: '_docVersionKey', 
-      _schemaVersionKey:'0001'
-    }
-  };
+  options: {
+    timestamps:true,
+    writeConcern:{ w: 1, j: false},
+    versionKey: '_docVersionKey', 
+    collection: collectionName,
+    documentation:schemaDescription,
+    _schemaVersion: schemaVersion
+  }
+};
 
-
-  

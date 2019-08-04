@@ -1,29 +1,41 @@
 "use strict"
-// Mongo supported types
-  // Monqade Supported
-  //   Object ID  to be supported
-  //   Boolean 
-  //   Date, timestamp 
-  //   Numbers 
-
-  // Monqade Supported
-  //   Min key (internal type)  -- not supported
-  //   Null  -- not supported
-  //   Symbol, String   -- not supported
-  //   Object  -- not supported
-  //   Array  -- not supported
-  //   Binary data  -- not supported
-  //   Regular expression  -- not supported
-  //   Max key (internal type)  -- not supported
 
 
-const ObjectId='ObjectId'; // calling code will need to replace
-                           // because 'common' file location unable to load mongoose within this file
+
+
+const collectionName = 'chaos'
+const schemaVersion='0002';
+const schemaDescription = `
+  use case:  
+  stress test Monqade components.  Should be the worst-of-the-worst schema. 
+  Has all data types: String, date, number, boolean plus ObjectID
+  should be able to demonstrate:
+
+    paths:  
+    - hidden paths ( isSearchable=false, isProjectable=false )  : myReadOnlyPath
+    - read-only paths ( isInsertable = false, isUpdatable = false ) : hiddenPath
+    - default values ( default: ()=>{} ) : memberSinceDate
+    - path without only the 'name' set : myNakedPath
+    - unique=true - cause issues with doUpsertOne (see extended documentation): foreignID
+    - bare minimum set properties (name and type) - very strange behaviour. : myNakedPath 
+
+    SchemaOptions:
+    - schema has no options set ( schemaOptions: {} )
+          collectionName is set only because the default name is MonqadeNameless[unix timestamp] 
+          which is a pain dev/debug
+
+
+
+  `;
+
+const isValidObjectID = require('mongoose').Types.ObjectId.isValid;
+
+
 const randomElement = (ary)=>{
  return ary[Math.floor(Math.random() * ary.length)];
 }
-// to be tested - the 'name' attribute is optional and foolish - it will be overwritten by the object key
 
+// make sure each datatype: String, date, number, boolean
 module.exports = {
   paths:{
     orgID: {
@@ -38,12 +50,47 @@ module.exports = {
       makeTestData: ()=>{return 'OrgID:' + Math.random()},
       notes: {
         "purpose": "This field is used for: ...",
-        "restriction": "max length, min value, explaination of validate "
+        "restriction": "max length, min value, explanation of validate "
       },
       maxlength: 50,
       minlength: 3
     },
-    myReadOnly: {
+
+    foreignID:{
+      name: "foreignID",
+      isSearchable:true,
+      isProjectable: true,
+      isUpdatable: true,
+      isInsertable: false,
+      isRequired: true ,
+      required:false,
+      type: 'ObjectId',
+      default: () => {return  "507f191e810c19729de860ea"},
+      makeTestData: ()=>{return "507f191e810c19729de860ea"},
+      validate: {
+        validator: function(v) {
+          return isValidObjectID(v);
+        },
+        message: v => `${v} does not appear to be a valid objectID`
+      },
+      notes: {
+        "purpose": `The objectID of the parent document.  
+                    Reference to the parent document should go here.
+
+                    `,
+        "restriction": "must be valid Mongo ObjectID. isRequire and does not have default value. "
+      },
+      maxlength: 24,
+      minlength: 24
+    },
+
+    myNakedPath: {
+      //will require set programmatically
+      name: "myNakedPath",
+      type: 'number'
+    },
+
+    myReadOnlyPath: {
       //will require set programmatically
       name: "myReadOnly",
       isSearchable: true,
@@ -55,8 +102,8 @@ module.exports = {
       default: () => {return Math.random()+''},
       makeTestData: ()=>{return 'The ABC Co.' + Math.random();},
       notes: {
-        "purpose": "This field is used for: ...",
-        "restriction": "max length, min value, explain of validate "
+        "purpose": "Demonstrate one method of creating a read-ony field.  For use by system only.",
+        "restriction": "length 3-50, write once. Has to be set via default function value"
       },
       maxlength: 50,
       minlength: 3
@@ -64,7 +111,7 @@ module.exports = {
     hiddenPath: {
       name: "hiddenPath",
       isSearchable: false,
-      isProjectable: true,
+      isProjectable: false,
       isUpdatable: false,
       isInsertable: false,
       isRequired: true,
@@ -72,12 +119,28 @@ module.exports = {
       default: () => {return Math.random()+''},
       makeTestData: ()=>{return 'The ABC Co.' + Math.random();},
       notes: {
-        "purpose": "This field is used for: ...",
-        "restriction": "max length, min value, explaination of validate "
+        "purpose": "Demonstrate one method of creating a hidden field.  For use by system only.",
+        "restriction": "length 1-50, write once. Has to be set via default function value"
       },
       maxlength: 50,
       minlength: 1
     },
+    restrictedPath: {
+      name: "restrictedPath",
+      isSearchable: false,
+      isProjectable: false,
+      isUpdatable: false,
+      isInsertable: true,
+      isRequired: true,
+      type: "Number",
+      makeTestData: ()=>{return Math.floor(10 * Math.random())},
+       notes: {
+        "purpose": "Demonstrate one method of creating a hidden field.  For use by system only.",
+        "restriction": "number 0-9, write once (at insert)"
+      },
+      "max": 9
+    },
+
     companyName: {
       name: "companyName",
       isSearchable: true,
@@ -88,8 +151,8 @@ module.exports = {
       type: "String",
       makeTestData: ()=>{return 'The ABC Co.' + Math.random();},
       notes: {
-        "purpose": "This field is used for: ...",
-        "restriction": "max length, min value, explaination of validate "
+        "purpose": "Just a text path for demonstration purpose",
+        "restriction": "length 3-50"
       },
       maxlength: 50,
       minlength: 3
@@ -104,8 +167,8 @@ module.exports = {
       type: "String",
       makeTestData: ()=>{return 'Lewiston ' + Math.random();},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": "Just a text path for demonstration purpose",
+        "restriction": "length 2-100"
       },
       maxlength: 100,
       minlength: 2
@@ -120,8 +183,8 @@ module.exports = {
       type: "String",
       makeTestData: ()=>{return randomElement(['ME','CA','NE','LA','NY','MN','TX','CO','OR','FL','NC','UT','NV','WA','OH'])},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": "Just another path to segment a collection in some meaningful way.",
+        "restriction": "must be exactly 2 characters"
       },
       maxlength: 2,
       minlength: 2
@@ -136,8 +199,8 @@ module.exports = {
       type: "Number",
       makeTestData: ()=>{return Math.floor(200 * Math.random())},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": "Simply to assure integer datatype is part of the schema",
+        "restriction": undefined
       },
       "max": 300
     },
@@ -151,24 +214,16 @@ module.exports = {
       type: "Number",
       makeTestData: ()=>{return Math.floor(10 * Math.random())},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": `Serves as a path that can be used as a collection segment.  
+                    All documents with idxBucket=n -> approx. 10% the documents 
+                    All documents with idxBucket < n -> approx. (n*10)% the documents 
+                    All documents with idxBucket < 3 -> approx. 30% the documents 
+                    All documents with idxBucket in(0,2,1,5,9) -> approx. 50% the documents
+
+        `,
+        "restriction": "none"
       },
-      "max": 9
-    },
-    restrictedPath: {
-      name: "restrictedPath",
-      isSearchable: false,
-      isProjectable: false,
-      isUpdatable: false,
-      isInsertable: true,
-      isRequired: true,
-      type: "Number",
-      makeTestData: ()=>{return Math.floor(10 * Math.random())},
-       notes: {
-        "purpose": "debug testing functionality",
-        "restriction": "number 0-9"
-      },
+      "min": 0,
       "max": 9
     },
     someDate: {
@@ -181,8 +236,8 @@ module.exports = {
       type: "Date",
       makeTestData: ()=>{return new Date()},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": "Just a date for demonstration - missing 'notes.restriction' ",
+
       }
     },
     memberSinceDate: {
@@ -196,38 +251,37 @@ module.exports = {
       type: "Date",
       makeTestData: ()=>{return new Date()},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
-        "restriction": "true or false"
+        "purpose": "Should be a system set path that can not be changed.",
+        "restriction": "not insertable, not updatable"
       }
     },
     isActive: {
       name: "isActive",
       isSearchable: true,
       isProjectable: true,
-      isUpdatable: false,
+      isUpdatable: true,
       isInsertable: true,
       isRequired: true,
       type: "Boolean",
       makeTestData: ()=>{return (Math.random()<0.5) ? true : false;},
       notes: {
-        "purpose": "Instead of 'delete' deactive",
+        "purpose": ` Boolean: updatable, insertable, is require.  
+            Should be able to demonstrate any issues with writing undefined and/or 0  `,
         "restriction": "true or false"
       }
     }
+    
   
   },
 
   
   options:
     {
-      documentation:`some document stuff goes here`,
-      collection: 'chaos',
-      timestamps:true,
-      writeConcern:{ w: 1, j: false},
-      versionKey: '_docVersionKey', 
-      _schemaVersionKey:'0001'
+      // timestamps:true,
+      // writeConcern:{ w: 1, j: false},
+      // versionKey: '_docVersionKey' 
+      collection: collectionName  // not entirely necessary.  If undefined will be set to MoqandeNameless[unix date stamp] - 
+      // documentation:schemaDescription,
+      // _schemaVersion: 'schemaVersionXX'
     }
   };
-
-
-  
