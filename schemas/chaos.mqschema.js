@@ -25,8 +25,13 @@ const schemaDescription = `
           which is a pain dev/debug
 
 
+          known issue  cant seem to doUpdateOne ...  as validate fails for foreignID - required 
+        when setting 'required' to false -seems honkey-dory - 
+
+        
 
   `;
+
 
 const isValidObjectID = require('mongoose').Types.ObjectId.isValid;
 
@@ -92,7 +97,7 @@ module.exports = {
 
     myReadOnlyPath: {
       //will require set programmatically
-      name: "myReadOnly",
+      name: "myReadOnlyPath",
       isSearchable: true,
       isProjectable: true,
       isUpdatable: false,

@@ -1,4 +1,16 @@
 "use strict"
+
+const collectionName = 'foreign-keys'
+const documentation = `
+  To demonstrate the use of foreign based unique identifiers.
+  
+  version history:
+    0001    - original
+    0001.1  - pathID pathName mismatch correction
+              changed schema option to soft-coded variables to improve readability
+`;
+const schemaVersion = '0001.1'
+
 var mongoose = require('mongoose');
 var id = mongoose.Types.ObjectId();
 const ObjectId='ObjectId'; // calling code will need to replace
@@ -26,7 +38,7 @@ module.exports = {
       minlength: 3
     },
     foreign_unique_id: {
-      name: "website",
+      name: "foreign_unique_id",
       isSearchable: true,
       isProjectable: true,
       isUpdatable: true,  // this should be an issue - will play with it
@@ -78,18 +90,12 @@ module.exports = {
   
   options:
     {
-      documentation:`
-        To demonstrate the use of foreign based unique identifiers.
-        
-
-      `,
-      collection: 'foreign-keys',
+      documentation: documentation,
+      collection: collectionName,
       timestamps:true,
       writeConcern:{ w: 1, j: false},
       versionKey: '_docVersionKey', 
-      _schemaVersion:'0001'
+      _schemaVersion: schemaVersion
     }
   };
 
-
-  

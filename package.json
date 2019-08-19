@@ -1,6 +1,6 @@
 {
   "name": "monqade-dev-schemas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Monqade Schema Definitions - mostly for development",
   "main": "index.js",
   "scripts": {

@@ -1,5 +1,5 @@
 
-module.exports.dictionary = require('./schemas/dictionary.mqschema');
+
 module.exports.chaos = require('./schemas/chaos.mqschema');
 module.exports.child = require('./schemas/child.mqschema');
 module.exports.organizations = require('./schemas/organizations.mqschema');

@@ -39,7 +39,7 @@ module.exports = {
       "max": 9
     },
   sortFieldTwo: {
-      name: "ssortFieldTwo",
+      name: "sortFieldTwo",
       isSearchable: true,
       isProjectable: true,
       isUpdatable: true,

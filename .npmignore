@@ -17,6 +17,7 @@ src-internal
 
 #I have heard complaints about test as part of npm pckage
 #but definately want as part of git
+development-working-dir
 test 
 .git
 git-tmc
@@ -26,6 +27,7 @@ git-hub.save
 todo.txt
 publish.sh
 .coveralls.yml
+utilities
 
 #code/resources no longer in use, queued to be deleted
 *.hidden
